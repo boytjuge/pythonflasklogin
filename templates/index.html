@@ -1,10 +1,37 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}  ยินดีต้อนรับ  {{ session['username'] }} {% endblock %}</h1>
+  <h1>{% block title %}  ยินดีต้อนรับ  {% endblock %}</h1>
 {% endblock %}
 
 
-
 {% block content %}
+
+
+<div >
+    <h4>สินค้า</h4>
+    <ul id="product_type">
+      {% for i  in  data %}
+     
+       {% if lange == "th" %}
+       <li class="list" id="p{{ i.uid }} "><a href="/category/{{i.type_name_local}}/{{ i.uid }}">{{ i.type_name_local }} </a>  
+        {% else %}
+        <li class="list" id="p{{ i.uid }} "><a href="/category/{{i.type_name}}/{{ i.uid }}">   {{ i.type_name }} 
+        {% endif %}
+      </a></li>
+  
+  
+      {% endfor %}
+  
+    </ul>
+  
+  </div>
+  <hr>
+  <div>
+    <h4>โปรโมชั่น</h4>
+  </div>
+
+  <div>
+    <h4>สินค้าแนะนำ</h4>
+  </div>
 {% endblock %}

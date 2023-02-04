@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %} ตะกร้าสินค้า {% endblock %}</h1> 
+  <style>
+
+
+    @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700');
+*
+{
+    margin: 0;
+    padding: 0;
+}
+
+
+body
+{
+    font-family: 'Roboto', sans-serif;
+}
+a
+{
+    text-decoration: none;
+}
+    </style>
+{% endblock %}
+
+{% block content %}
+
+{%if session['ds'] | length != 0  and  count != 0 %}
+
+<div>
+    <p><h2>รายการสินค้า  <span style="color: green;">{{count}} </span>รายการ |  จำนวน <span style="color: green;">{{q}}</span> ชิ้น | รวม <span style="color: green;">{{ '%0.2f'|format(t| float)}}</span> บาท</h2>
+       </p>
+       < <a href="/">เลือกซื้อสินค้า</a>
+<div class="grid-container">
+{% for dict_item in session.get('ds') %}
+  <div> 
+    No. {{ loop.index}}
+    <form  action="/del_cart" method="post" id="f{{dict_item.puid}}">
+        <img src="{{dict_item.pimg}}" height="100" width="100">
+        <p><h4>{{dict_item.pname}}</h4></p>
+        <p> ราคา : {{ '%0.2f'|format( dict_item.pprice | float  *    dict_item.qauntity|int |float) }} </p>
+        <p> จำนวน  : <a href="{{url_for('minute',puid=dict_item.puid )}}" style="padding: 5px 5px 10px; border: #363636;" >-</a> {{ dict_item.qauntity  }}<a href="{{url_for('plus',puid=dict_item.puid )}}" style="padding: 5px 5px 10px; border: #363636;" >+</a> / {{ dict_item.punit  }}</p>
+        <br>
+        <input type="hidden" name="puid" id="{{dict_item.puid}}" value="{{dict_item.puid}}">
+        <button  id="btndel{{dict_item.puid}}">ลบสินค้า</button>
+    </form>
+  </div>
+{% endfor %}
+
+<script >
+
+function ckalrt() {
+    Swal.fire({
+        title: 'ยืนยันคำสั่งซื้อ?',
+        text: "กรุณาตรวจสอบสินค้าก่อนดำเนินการ!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#E9E8E8',
+        confirmButtonText: 'ยืนยันคำสั่งซื้อ',
+        cancelButtonText:'ยกเลิก',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire(
+            'ยืนยันคำสั่งซื้อ!',
+            'ดำเนินการสำเร็จ',
+            'success',
+          ),
+         // setTimeout(sumbitform, 1000);
+         sumbitform();
+        }
+      })
+}
+
+function sumbitform(){
+    document.getElementById("frsubmit").submit();
+}
+
+   
+     
+
+</script>
+<hr size="3px">
+<form action="/billpayment" method="post" id="frsubmit">
+    <input type="hidden" name="obj" id="obj" value="{{session.get('ds')}}">
+    <button id="btnsubmit" type="button" onclick="ckalrt()">ยืนยันคำสั่งซื้อ</button>
+    
+</form>
+{% else %}
+
+<p>
+    ไม่พบสินค้า 
+</p>
+<p><a href="/">กลับสู่หน้าหลัก</a></p>
+
+  </div>
+  
+  </div>
+  
+{% endif %}
+{% endblock %}
